@@ -43,29 +43,29 @@ class BalMod: public Quality {
  public:
 
   // used to compute the quality participation of each community
-  vector<long double> in, tot;
+  vector<float> in, tot;
   vector<int> w; // w is also used to store size of communities
 
-  long double max; // biggest weight on links
+  float max; // biggest weight on links
 
-  BalMod(Graph & gr, long double max_w);
+  BalMod(Graph & gr, float max_w);
   ~BalMod();
 
-  inline void remove(int node, int comm, long double dnodecomm);
+  inline void remove(int node, int comm, float dnodecomm);
 
-  inline void insert(int node, int comm, long double dnodecomm);
+  inline void insert(int node, int comm, float dnodecomm);
 
-  inline long double gain(int node, int comm, long double dnodecomm, long double w_degree);
+  inline float gain(int node, int comm, float dnodecomm, float w_degree);
 
-  long double quality();
+  float quality();
 };
 
 
 inline void
-BalMod::remove(int node, int comm, long double dnodecomm) {
+BalMod::remove(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm]  -= 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm]  -= 2.0*dnodecomm + g.nb_selfloops(node);
   tot[comm] -= g.weighted_degree(node);
 
   w[comm]   -= g.nodes_w[node];
@@ -74,10 +74,10 @@ BalMod::remove(int node, int comm, long double dnodecomm) {
 }
 
 inline void
-BalMod::insert(int node, int comm, long double dnodecomm) {
+BalMod::insert(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm]  += 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm]  += 2.0*dnodecomm + g.nb_selfloops(node);
   tot[comm] += g.weighted_degree(node);
 
   w[comm]   += g.nodes_w[node];
@@ -85,20 +85,20 @@ BalMod::insert(int node, int comm, long double dnodecomm) {
   n2c[node] = comm;
 }
 
-inline long double
-BalMod::gain(int node, int comm, long double dnc, long double degc) {
+inline float
+BalMod::gain(int node, int comm, float dnc, float degc) {
   assert(node>=0 && node<size);
 
-  long double totc = tot[comm];
-  long double wc   = (long double)w[comm];
-  long double wu   = (long double)g.nodes_w[node];
+  float totc = tot[comm];
+  float wc   = (float)w[comm];
+  float wu   = (float)g.nodes_w[node];
   
-  long double m2   = g.total_weight;  
-  long double n    = (long double)g.sum_nodes_w;
+  float m2   = g.total_weight;  
+  float n    = (float)g.sum_nodes_w;
 
-  long double gain;
+  float gain;
   
-  gain  = 2.0L*dnc - degc*totc/m2 - wu*wc*max;
+  gain  = 2.0*dnc - degc*totc/m2 - wu*wc*max;
   gain += ((n*wu*max - degc)*(n*wc*max - totc)) / (n*n*max - m2);
 
   return gain;

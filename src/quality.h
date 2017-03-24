@@ -54,16 +54,16 @@ class Quality {
   virtual ~Quality();
   
   // remove the node from its current community with which it has dnodecomm links
-  virtual void remove(int node, int comm, long double dnodecomm)=0;
+  virtual void remove(int node, int comm, float dnodecomm)=0;
   
   // insert the node in comm with which it shares dnodecomm links
-  virtual void insert(int node, int comm, long double dnodecomm)=0;
+  virtual void insert(int node, int comm, float dnodecomm)=0;
   
   // compute the gain of quality by adding node to comm
-  virtual long double gain(int node, int comm, long double dnodecomm, long double w_degree)=0;
+  virtual float gain(int node, int comm, float dnodecomm, float w_degree)=0;
   
   // compute the quality of the current partition
-  virtual long double quality()=0;
+  virtual float quality()=0;
 };
 
 template<class T>

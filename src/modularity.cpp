@@ -55,13 +55,13 @@ Modularity::~Modularity() {
   tot.clear();
 }
 
-long double
+float
 Modularity::quality() {
-  long double q  = 0.0L;
-  long double m2 = g.total_weight;
+  float q  = 0.0;
+  float m2 = g.total_weight;
 
   for (int i=0 ; i<size ; i++) {
-    if (tot[i] > 0.0L)
+    if (tot[i] > 0.0)
       q += in[i] - (tot[i]*tot[i]) / m2;
   }
 

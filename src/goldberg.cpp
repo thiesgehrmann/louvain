@@ -36,7 +36,7 @@
 using namespace std;
 
 
-Goldberg::Goldberg(Graph & gr, long double max_w):Quality(gr,"Goldberg Density"),max(max_w) {
+Goldberg::Goldberg(Graph & gr, float max_w):Quality(gr,"Goldberg Density"),max(max_w) {
   n2c.resize(size);
 
   in.resize(size);
@@ -55,14 +55,14 @@ Goldberg::~Goldberg() {
   w.clear();
 }
 
-long double
+float
 Goldberg::quality() {
-  long double q  = 0.0L;
-  long double n  = (long double)g.sum_nodes_w;
+  float q  = 0.0;
+  float n  = (float)g.sum_nodes_w;
   
   for (int i=0 ; i<size ; i++) {
-    long double wc = (long double)w[i] * 2.0L;
-    if (wc > 0.0L)
+    float wc = (float)w[i] * 2.0;
+    if (wc > 0.0)
       q += in[i] / wc;
   }
   

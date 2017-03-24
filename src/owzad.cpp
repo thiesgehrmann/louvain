@@ -36,7 +36,7 @@
 using namespace std;
 
 
-OwZad::OwZad(Graph & gr, long double al, long double max_w):Quality(gr,"Owsinski-Zadrozny (with alpha=" + to_string(al) + ")"), alpha(al), max(max_w) {  
+OwZad::OwZad(Graph & gr, float al, float max_w):Quality(gr,"Owsinski-Zadrozny (with alpha=" + to_string(al) + ")"), alpha(al), max(max_w) {  
   n2c.resize(size);
 
   in.resize(size);
@@ -57,15 +57,15 @@ OwZad::~OwZad() {
   w.clear();
 }
 
-long double
+float
 OwZad::quality() {
-  long double q  = 0.0L;
-  long double m2 = g.total_weight;
-  long double n  = (long double)g.sum_nodes_w;
+  float q  = 0.0;
+  float m2 = g.total_weight;
+  float n  = (float)g.sum_nodes_w;
 
   for (int i=0 ; i < size ; i++) {
-    long double wc = (long double)w[i];
-    if (wc > 0.0L)
+    float wc = (float)w[i];
+    if (wc > 0.0)
       q += in[i] - alpha*(wc*wc*max);
   }
   

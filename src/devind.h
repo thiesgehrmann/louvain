@@ -42,27 +42,27 @@ using namespace std;
 class DevInd: public Quality {
  public:
 
-  vector<long double> in, tot; // used to compute the quality participation of each community
+  vector<float> in, tot; // used to compute the quality participation of each community
   vector<int> w; // used to store size of communities
 
   DevInd(Graph & gr);
   ~DevInd();
 
-  inline void remove(int node, int comm, long double dnodecomm);
+  inline void remove(int node, int comm, float dnodecomm);
 
-  inline void insert(int node, int comm, long double dnodecomm);
+  inline void insert(int node, int comm, float dnodecomm);
 
-  inline long double gain(int node, int comm, long double dnodecomm, long double w_degree);
+  inline float gain(int node, int comm, float dnodecomm, float w_degree);
 
-  long double quality();
+  float quality();
 };
 
 
 inline void
-DevInd::remove(int node, int comm, long double dnodecomm) {
+DevInd::remove(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm]  -= 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm]  -= 2.0*dnodecomm + g.nb_selfloops(node);
   tot[comm] -= g.weighted_degree(node);
   w[comm]   -= g.nodes_w[node];
 
@@ -70,28 +70,28 @@ DevInd::remove(int node, int comm, long double dnodecomm) {
 }
 
 inline void
-DevInd::insert(int node, int comm, long double dnodecomm) {
+DevInd::insert(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm]  += 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm]  += 2.0*dnodecomm + g.nb_selfloops(node);
   tot[comm] += g.weighted_degree(node);
   w[comm]   += g.nodes_w[node];
 
   n2c[node] = comm;
 }
 
-inline long double
-DevInd::gain(int node, int comm, long double dnc, long double degc) {
+inline float
+DevInd::gain(int node, int comm, float dnc, float degc) {
   assert(node>=0 && node<size);
 
-  long double totc = tot[comm];
-  long double wc   = (long double)w[comm];
-  long double wu   = (long double)g.nodes_w[node];
+  float totc = tot[comm];
+  float wc   = (float)w[comm];
+  float wu   = (float)g.nodes_w[node];
 
-  long double m2   = g.total_weight;
-  long double n    = (long double)g.sum_nodes_w;
+  float m2   = g.total_weight;
+  float n    = (float)g.sum_nodes_w;
 
-  long double gain = dnc - (totc*wu + degc*wc)/n + (m2*wu*wc)/(n*n);
+  float gain = dnc - (totc*wu + degc*wc)/n + (m2*wu*wc)/(n*n);
 
   return gain;
 }

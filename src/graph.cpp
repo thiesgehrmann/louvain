@@ -48,7 +48,7 @@ Graph::Graph(char *filename, int type) {
 
   while (!finput.eof()) {
     unsigned int src, dest;
-    long double weight = 1.0L;
+    float weight = 1.0;
 
     if (type==WEIGHTED) {
       finput >> src >> dest >> weight;
@@ -114,8 +114,8 @@ Graph::renumber(int type, char *filename) {
 void
 Graph::clean(int type) {
   for (unsigned int i=0 ; i<links.size() ; i++) {
-    map<int, long double> m;
-    map<int, long double>::iterator it;
+    map<int, float> m;
+    map<int, float>::iterator it;
 
     for (unsigned int j=0 ; j<links[i].size() ; j++) {
       it = m.find(links[i][j].first);
@@ -125,7 +125,7 @@ Graph::clean(int type) {
       	it->second+=links[i][j].second;
     }
     
-    vector<pair<int, long double> > v;
+    vector<pair<int, float> > v;
     for (it = m.begin() ; it!=m.end() ; it++)
       v.push_back(*it);
     links[i].clear();
@@ -138,7 +138,7 @@ Graph::display(int type) {
   for (unsigned int i=0 ; i<links.size() ; i++) {
     for (unsigned int j=0 ; j<links[i].size() ; j++) {
       int dest = links[i][j].first;
-      long double weight = links[i][j].second;
+      float weight = links[i][j].second;
       if (type==WEIGHTED)
 	cout << i << " " << dest << " " << weight << endl;
       else
@@ -179,8 +179,8 @@ Graph::display_binary(char *filename, char *filename_w, int type) {
     foutput_w.open(filename_w,fstream::out | fstream::binary);
     for (int i=0 ; i<s ; i++) {
       for (unsigned int j=0 ; j<links[i].size() ; j++) {
-	long double weight = links[i][j].second;
-	foutput_w.write((char *)(&weight),sizeof(long double));
+	float weight = links[i][j].second;
+	foutput_w.write((char *)(&weight),sizeof(float));
       }
     }
     foutput_w.close();

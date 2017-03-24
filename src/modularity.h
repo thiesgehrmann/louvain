@@ -42,47 +42,47 @@ using namespace std;
 class Modularity: public Quality {
  public:
 
-  vector<long double> in, tot; // used to compute the quality participation of each community
+  vector<float> in, tot; // used to compute the quality participation of each community
 
   Modularity(Graph & gr);
   ~Modularity();
 
-  inline void remove(int node, int comm, long double dnodecomm);
+  inline void remove(int node, int comm, float dnodecomm);
 
-  inline void insert(int node, int comm, long double dnodecomm);
+  inline void insert(int node, int comm, float dnodecomm);
 
-  inline long double gain(int node, int comm, long double dnodecomm, long double w_degree);
+  inline float gain(int node, int comm, float dnodecomm, float w_degree);
 
-  long double quality();
+  float quality();
 };
 
 
 inline void
-Modularity::remove(int node, int comm, long double dnodecomm) {
+Modularity::remove(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm]  -= 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm]  -= 2.0*dnodecomm + g.nb_selfloops(node);
   tot[comm] -= g.weighted_degree(node);
   
   n2c[node] = -1;
 }
 
 inline void
-Modularity::insert(int node, int comm, long double dnodecomm) {
+Modularity::insert(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
   
-  in[comm]  += 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm]  += 2.0*dnodecomm + g.nb_selfloops(node);
   tot[comm] += g.weighted_degree(node);
   
   n2c[node] = comm;
 }
 
-inline long double
-Modularity::gain(int node, int comm, long double dnc, long double degc) {
+inline float
+Modularity::gain(int node, int comm, float dnc, float degc) {
   assert(node>=0 && node<size);
   
-  long double totc = tot[comm];
-  long double m2   = g.total_weight;
+  float totc = tot[comm];
+  float m2   = g.total_weight;
   
   return (dnc - totc*degc/m2);
 }

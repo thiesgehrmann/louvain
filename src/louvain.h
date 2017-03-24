@@ -46,7 +46,7 @@ using namespace std;
 
 class Louvain {
  public:
-  vector<long double> neigh_weight;
+  vector<float> neigh_weight;
   vector<int> neigh_pos;
   int neigh_last;
 
@@ -56,8 +56,8 @@ class Louvain {
 
   // a new pass is computed if the last one has generated an increase 
   // better than eps_impr
-  // if 0.0L even a minor increase is enough to go for one more pass
-  long double eps_impr;
+  // if 0.0 even a minor increase is enough to go for one more pass
+  float eps_impr;
   
   // Quality functions used to compute communities
   Quality* qual;
@@ -66,7 +66,7 @@ class Louvain {
   // constructors:
   // reads graph from file using graph constructor
   // type defined the weighted/unweighted status of the graph file
-  Louvain (int nb_pass, long double eps_impr, Quality* q);
+  Louvain (int nb_pass, float eps_impr, Quality* q);
 
   // initiliazes the partition with something else than all nodes alone
   void init_partition(char *filename_part);

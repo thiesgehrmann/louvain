@@ -36,7 +36,7 @@
 using namespace std;
 
 
-BalMod::BalMod(Graph & gr, long double max_w):Quality(gr,"Balanced Modularity"), max(max_w) {
+BalMod::BalMod(Graph & gr, float max_w):Quality(gr,"Balanced Modularity"), max(max_w) {
   n2c.resize(size);
 
   in.resize(size);
@@ -58,16 +58,16 @@ BalMod::~BalMod() {
   w.clear();
 }
 
-long double
+float
 BalMod::quality() {
-  long double q  = 0.0L;
-  long double m2 = g.total_weight;
-  long double n  = (long double)g.sum_nodes_w;
+  float q  = 0.0;
+  float m2 = g.total_weight;
+  float n  = (float)g.sum_nodes_w;
 
   for (int i=0 ; i<size ; i++) {
-    long double wc = (long double)w[i];
-    if (wc > 0.0L) {
-      q += 2.0L*in[i] - (tot[i]*tot[i])/m2 - wc*wc*max;
+    float wc = (float)w[i];
+    if (wc > 0.0) {
+      q += 2.0*in[i] - (tot[i]*tot[i])/m2 - wc*wc*max;
       q += ((n*wc*max - tot[i])*(n*wc*max - tot[i])) / (n*n*max - m2);
     }
   }

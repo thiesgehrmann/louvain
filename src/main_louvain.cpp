@@ -56,18 +56,18 @@ char *filename_part = NULL;
 int type = UNWEIGHTED;
 
 int nb_pass = 0;
-long double precision = 0.000001L;
+float precision = 0.001;
 int display_level = -2;
 
 unsigned short id_qual = 0;
 
-long double alpha = 0.5L;
+float alpha = 0.5;
 int kmin = 1;
 
-long double sum_se = 0.0L;
-long double sum_sq = 0.0L;
+float sum_se = 0.0;
+float sum_sq = 0.0;
 
-long double max_w = 1.0L;
+float max_w = 1.0;
 
 Quality *q;
 
@@ -267,8 +267,8 @@ main(int argc, char **argv) {
   
   bool improvement = true;
   
-  long double quality = (c.qual)->quality();
-  long double new_qual;
+  float quality = (c.qual)->quality();
+  float new_qual;
   
   int level = 0;
   

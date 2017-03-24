@@ -36,7 +36,7 @@
 using namespace std;
 
 
-CondorA::CondorA(Graph & gr, long double sum):Quality(gr,"A-weighted Condorcet"),sum_se(sum) { 
+CondorA::CondorA(Graph & gr, float sum):Quality(gr,"A-weighted Condorcet"),sum_se(sum) { 
   n2c.resize(size);
 
   in.resize(size);
@@ -53,35 +53,35 @@ CondorA::~CondorA() {
   in.clear();
 }
 
-long double
+float
 CondorA::graph_weighting(Graph *g) {
-  long double sum_se = 0.0L;
+  float sum_se = 0.0;
   
-  vector<long double> aux_weights;
+  vector<float> aux_weights;
 
   // foreach weight, change Aij to 4Aij/(d(i)+d(i)) - Aii/2d(i) - Ajj/2d(j)
   for (int u=0 ; u < g->nb_nodes ; u++) {
-    pair<vector<int>::iterator, vector<long double>::iterator> p = g->neighbors(u);
+    pair<vector<int>::iterator, vector<float>::iterator> p = g->neighbors(u);
     int deg = g->nb_neighbors(u);
     for (int i=0 ; i < deg ; i++) {
       int neigh = *(p.first+i);
-      long double neigh_w = 0.0L;
+      float neigh_w = 0.0;
 
-      long double aux_neigh_w = 0.0L; // to compute Âij = 2Aij / (d(i)+d(j))
-      long double tmp_neigh_w = 0.0L; // to compute (Âii+Âjj)/2 = Aii/2d(i) + Ajj/2d(j)
+      float aux_neigh_w = 0.0; // to compute Âij = 2Aij / (d(i)+d(j))
+      float tmp_neigh_w = 0.0; // to compute (Âii+Âjj)/2 = Aii/2d(i) + Ajj/2d(j)
       
-      long double deg_neigh = (long double)(g->nb_neighbors(neigh));
+      float deg_neigh = (float)(g->nb_neighbors(neigh));
       
       if ((g->weights).size() == 0)
-	aux_neigh_w = 2.0L / ((long double)deg + deg_neigh);
+	aux_neigh_w = 2.0 / ((float)deg + deg_neigh);
       else {
-	long double old_neigh = (long double)*(p.second+i);
-	aux_neigh_w = 2.0L*old_neigh / ((long double)deg + deg_neigh);
+	float old_neigh = (float)*(p.second+i);
+	aux_neigh_w = 2.0*old_neigh / ((float)deg + deg_neigh);
       }
 
-      tmp_neigh_w = (g->nb_selfloops(u)) / (2.0L*(long double)deg) + (g->nb_selfloops(neigh)) / (2.0L*deg_neigh);
+      tmp_neigh_w = (g->nb_selfloops(u)) / (2.0*(float)deg) + (g->nb_selfloops(neigh)) / (2.0*deg_neigh);
 
-      neigh_w = 2.0L*aux_neigh_w - tmp_neigh_w;
+      neigh_w = 2.0*aux_neigh_w - tmp_neigh_w;
       aux_weights.push_back(neigh_w);
 
       sum_se += tmp_neigh_w - aux_neigh_w;
@@ -91,11 +91,11 @@ CondorA::graph_weighting(Graph *g) {
   g->weights.clear();
   g->weights = aux_weights;
 
-  g->total_weight = 0.0L;
+  g->total_weight = 0.0;
 
   // Compute total weight
   for (int i=0 ; i < g->nb_nodes ; i++)
-    g->total_weight += (long double)(g->weighted_degree(i));
+    g->total_weight += (float)(g->weighted_degree(i));
 
   aux_weights.clear();
   
@@ -103,10 +103,10 @@ CondorA::graph_weighting(Graph *g) {
 }
 
 
-long double
+float
 CondorA::quality() {
-  long double q  = 0.0L;
-  long double n  = (long double)g.sum_nodes_w;
+  float q  = 0.0;
+  float n  = (float)g.sum_nodes_w;
   
   for (int i=0 ; i<size ; i++)
     q += in[i];

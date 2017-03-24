@@ -42,35 +42,35 @@ using namespace std;
 class DP: public Quality {
  public:
 
-  vector<long double> in; // used to compute the quality participation of each community
+  vector<float> in; // used to compute the quality participation of each community
   vector<int> w; // used to store size of communities
   int kappa; // number of communities
 
-  long double sum_sq; // used to store Sum Âij^2
-  long double max;
+  float sum_sq; // used to store Sum Âij^2
+  float max;
 
-  DP(Graph & gr, long double sum, long double max_w);
+  DP(Graph & gr, float sum, float max_w);
   ~DP();
 
   // change the weight of each link ij in the graph, from Aij to 2Aij / (d(i)+d(j))
   // return the result of Sum Âij^2
-  static long double graph_weighting(Graph *g);
+  static float graph_weighting(Graph *g);
 
-  inline void remove(int node, int comm, long double dnodecomm);
+  inline void remove(int node, int comm, float dnodecomm);
 
-  inline void insert(int node, int comm, long double dnodecomm);
+  inline void insert(int node, int comm, float dnodecomm);
 
-  inline long double gain(int node, int comm, long double dnodecomm, long double w_degree);
+  inline float gain(int node, int comm, float dnodecomm, float w_degree);
 
-  long double quality();
+  float quality();
 };
 
 
 inline void
-DP::remove(int node, int comm, long double dnodecomm) {
+DP::remove(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm] -= 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm] -= 2.0*dnodecomm + g.nb_selfloops(node);
 
   w[comm] -= g.nodes_w[node];
 
@@ -81,10 +81,10 @@ DP::remove(int node, int comm, long double dnodecomm) {
 }
 
 inline void
-DP::insert(int node, int comm, long double dnodecomm) {
+DP::insert(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm] += 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm] += 2.0*dnodecomm + g.nb_selfloops(node);
   
   if (w[comm] == 0)
     kappa++;
@@ -94,23 +94,23 @@ DP::insert(int node, int comm, long double dnodecomm) {
   n2c[node] = comm;
 }
 
-inline long double
-DP::gain(int node, int comm, long double dnc, long double degc) {
+inline float
+DP::gain(int node, int comm, float dnc, float degc) {
   assert(node>=0 && node<size);
 
-  long double inc  = in[comm];
-  long double self = g.nb_selfloops(node);
-  long double wc   = (long double)w[comm];
-  long double wu   = (long double)g.nodes_w[node];
+  float inc  = in[comm];
+  float self = g.nb_selfloops(node);
+  float wc   = (float)w[comm];
+  float wu   = (float)g.nodes_w[node];
   
-  long double gain;
+  float gain;
 
-  if (wc == 0.0L) {
-    gain  = (2.0L*dnc+self) / wu;
-    gain -= 1.0L/2.0L;
+  if (wc == 0.0) {
+    gain  = (2.0*dnc+self) / wu;
+    gain -= 1.0/2.0;
   }
   else {
-    gain  = (inc + 2.0L*dnc+self) / (wc+wu);
+    gain  = (inc + 2.0*dnc+self) / (wc+wu);
     gain -= inc/wc;
   }
 

@@ -58,18 +58,18 @@ DevInd::~DevInd() {
   w.clear();
 }
 
-long double
+float
 DevInd::quality() {
-  long double q  = 0.0L;
-  long double n  = (long double)g.sum_nodes_w;
-  long double m2 = g.total_weight;
+  float q  = 0.0;
+  float n  = (float)g.sum_nodes_w;
+  float m2 = g.total_weight;
 
-  long double sum = 0.0L;
+  float sum = 0.0;
 
   for (int i=0 ; i<size ; i++) {
-    long double wc = (long double)w[i];
-    if (wc > 0.0L) {
-      q += in[i] - (2.0L*tot[i]*wc) / n;
+    float wc = (float)w[i];
+    if (wc > 0.0) {
+      q += in[i] - (2.0*tot[i]*wc) / n;
       sum += wc*wc;
     }
   }

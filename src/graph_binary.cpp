@@ -39,7 +39,7 @@ Graph::Graph() {
   nb_nodes = 0;
   nb_links = 0ULL;
 
-  total_weight = 0.0L;
+  total_weight = 0.0;
   sum_nodes_w = 0;
 }
 
@@ -70,7 +70,7 @@ Graph::Graph(char *filename, char *filename_w, int type) {
 
   // IF WEIGHTED, read weights: 10 bytes for each link (each link is counted twice)
   weights.resize(0);
-  total_weight = 0.0L;
+  total_weight = 0.0;
   if (type==WEIGHTED) {
     ifstream finput_w;
     finput_w.open(filename_w,fstream::in | fstream::binary);
@@ -80,7 +80,7 @@ Graph::Graph(char *filename, char *filename_w, int type) {
     }
 
     weights.resize(nb_links);
-    finput_w.read((char *)(&weights[0]), nb_links*sizeof(long double));
+    finput_w.read((char *)(&weights[0]), nb_links*sizeof(float));
     if (finput_w.rdstate() != ios::goodbit) {
       cerr << "The file " << filename_w << " does not correspond to valid weights for the graph" << filename << endl;
       exit(EXIT_FAILURE);
@@ -89,15 +89,15 @@ Graph::Graph(char *filename, char *filename_w, int type) {
 
   // Compute total weight
   for (int i=0 ; i<nb_nodes ; i++)
-    total_weight += (long double)weighted_degree(i);
+    total_weight += (float)weighted_degree(i);
 
   nodes_w.assign(nb_nodes, 1);
   sum_nodes_w = nb_nodes;
 }
 
-long double
+float
 Graph::max_weight() {
-  long double max = 1.0L;
+  float max = 1.0;
 
   if (weights.size()!=0)
     max = *max_element(weights.begin(),weights.end());
@@ -122,7 +122,7 @@ Graph::add_selfloops() {
   unsigned long long sum_d = 0ULL;
 
   for (int u=0 ; u < nb_nodes ; u++) {
-    pair<vector<int>::iterator, vector<long double>::iterator> p = neighbors(u);
+    pair<vector<int>::iterator, vector<float>::iterator> p = neighbors(u);
     int deg = nb_neighbors(u);
 
     for (int i=0 ; i < deg ; i++) {
@@ -132,7 +132,7 @@ Graph::add_selfloops() {
 
     sum_d += (unsigned long long)deg;
 
-    if (nb_selfloops(u) == 0.0L) {
+    if (nb_selfloops(u) == 0.0) {
       aux_links.push_back(u); // add a selfloop
       sum_d += 1ULL;
     }
@@ -149,7 +149,7 @@ Graph::add_selfloops() {
 void
 Graph::display() {
   for (int node=0 ; node<nb_nodes ; node++) {
-    pair<vector<int>::iterator, vector<long double>::iterator > p = neighbors(node);
+    pair<vector<int>::iterator, vector<float>::iterator > p = neighbors(node);
     cout << node << ":" ;
     for (int i=0 ; i<nb_neighbors(node) ; i++) {
       if (true) {
@@ -166,7 +166,7 @@ Graph::display() {
 void
 Graph::display_reverse() {
   for (int node=0 ; node<nb_nodes ; node++) {
-    pair<vector<int>::iterator, vector<long double>::iterator > p = neighbors(node);
+    pair<vector<int>::iterator, vector<float>::iterator > p = neighbors(node);
     for (int i=0 ; i<nb_neighbors(node) ; i++) {
       if (node>*(p.first+i)) {
 	if (weights.size()!=0)
@@ -182,15 +182,15 @@ bool
 Graph::check_symmetry() {
   int error = 0;
   for (int node=0 ; node<nb_nodes ; node++) {
-    pair<vector<int>::iterator, vector<long double>::iterator > p = neighbors(node);
+    pair<vector<int>::iterator, vector<float>::iterator > p = neighbors(node);
     for (int i=0 ; i<nb_neighbors(node) ; i++) {
       int neigh = *(p.first+i);
-      long double weight = *(p.second+i);
+      float weight = *(p.second+i);
 
-      pair<vector<int>::iterator, vector<long double>::iterator > p_neigh = neighbors(neigh);
+      pair<vector<int>::iterator, vector<float>::iterator > p_neigh = neighbors(neigh);
       for (int j=0 ; j<nb_neighbors(neigh) ; j++) {
 	int neigh_neigh = *(p_neigh.first+j);
-	long double neigh_weight = *(p_neigh.second+j);
+	float neigh_weight = *(p_neigh.second+j);
 
 	if (node==neigh_neigh && weight!=neigh_weight) {
 	  cout << node << " " << neigh << " " << weight << " " << neigh_weight << endl;

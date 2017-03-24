@@ -32,7 +32,7 @@
 using namespace std;
 
 
-Louvain::Louvain(int nbp, long double epsq, Quality* q) {
+Louvain::Louvain(int nbp, float epsq, Quality* q) {
   qual = q;
 
   neigh_weight.resize(qual->size,-1);
@@ -62,7 +62,7 @@ Louvain::init_partition(char * filename) {
       int i=0;
       for (i=0 ; i<neigh_last ; i++) {
 	int best_comm = neigh_pos[i];
-	long double best_nblinks = neigh_weight[neigh_pos[i]];
+	float best_nblinks = neigh_weight[neigh_pos[i]];
 	if (best_comm==comm) {
 	  qual->insert(node, best_comm, best_nblinks);
 	  break;
@@ -82,7 +82,7 @@ Louvain::neigh_comm(int node) {
   
   neigh_last = 0;
 
-  pair<vector<int>::iterator, vector<long double>::iterator> p = (qual->g).neighbors(node);
+  pair<vector<int>::iterator, vector<float>::iterator> p = (qual->g).neighbors(node);
   int deg = (qual->g).nb_neighbors(node);
 
   neigh_pos[0] = qual->n2c[node];
@@ -92,11 +92,11 @@ Louvain::neigh_comm(int node) {
   for (int i=0 ; i<deg ; i++) {
     int neigh  = *(p.first+i);
     int neigh_comm = qual->n2c[neigh];
-    long double neigh_w = ((qual->g).weights.size()==0)?1.0L:*(p.second+i);
+    float neigh_w = ((qual->g).weights.size()==0)?1.0:*(p.second+i);
     
     if (neigh!=node) {
       if (neigh_weight[neigh_comm]==-1) {
-	neigh_weight[neigh_comm] = 0.0L;
+	neigh_weight[neigh_comm] = 0.0;
 	neigh_pos[neigh_last++] = neigh_comm;
       }
       neigh_weight[neigh_comm] += neigh_w;
@@ -117,7 +117,7 @@ Louvain::partition2graph() {
       renumber[i]=end++;
 
   for (int i=0 ; i< qual->size ; i++) {
-    pair<vector<int>::iterator, vector<long double>::iterator> p = (qual->g).neighbors(i);
+    pair<vector<int>::iterator, vector<float>::iterator> p = (qual->g).neighbors(i);
 
     int deg = (qual->g).nb_neighbors(i);
     for (int j=0 ; j<deg ; j++) {
@@ -174,20 +174,20 @@ Louvain::partition2graph_binary() {
   g2.nodes_w.resize(nbc);
   
   for (int comm=0 ; comm<nbc ; comm++) {
-    map<int,long double> m;
-    map<int,long double>::iterator it;
+    map<int,float> m;
+    map<int,float>::iterator it;
 
     int size_c = comm_nodes[comm].size();
 
     g2.assign_weight(comm, comm_weight[comm]);
 
     for (int node=0 ; node<size_c ; node++) {
-      pair<vector<int>::iterator, vector<long double>::iterator> p = (qual->g).neighbors(comm_nodes[comm][node]);
+      pair<vector<int>::iterator, vector<float>::iterator> p = (qual->g).neighbors(comm_nodes[comm][node]);
       int deg = (qual->g).nb_neighbors(comm_nodes[comm][node]);
       for (int i=0 ; i<deg ; i++) {
 	int neigh = *(p.first+i);
 	int neigh_comm = renumber[qual->n2c[neigh]];
-	long double neigh_weight = ((qual->g).weights.size()==0)?1.0L:*(p.second+i);
+	float neigh_weight = ((qual->g).weights.size()==0)?1.0:*(p.second+i);
 
 	it = m.find(neigh_comm);
 	if (it==m.end())
@@ -215,8 +215,8 @@ Louvain::one_level() {
   bool improvement=false ;
   int nb_moves;
   int nb_pass_done = 0;
-  long double new_qual = qual->quality();
-  long double cur_qual = new_qual;
+  float new_qual = qual->quality();
+  float cur_qual = new_qual;
 
   vector<int> random_order(qual->size);
   for (int i=0 ; i < qual->size ; i++)
@@ -241,7 +241,7 @@ Louvain::one_level() {
     for (int node_tmp = 0 ; node_tmp < qual->size ; node_tmp++) {
       int node = random_order[node_tmp];
       int node_comm = qual->n2c[node];
-      long double w_degree = (qual->g).weighted_degree(node);
+      float w_degree = (qual->g).weighted_degree(node);
 
       // computation of all neighboring communities of current node
       neigh_comm(node);
@@ -251,10 +251,10 @@ Louvain::one_level() {
       // compute the nearest community for node
       // default choice for future insertion is the former community
       int best_comm = node_comm;
-      long double best_nblinks  = 0.0L;
-      long double best_increase = 0.0L;
+      float best_nblinks  = 0.0;
+      float best_increase = 0.0;
       for (int i=0 ; i<neigh_last ; i++) {
-	long double increase = qual->gain(node, neigh_pos[i], neigh_weight[neigh_pos[i]], w_degree);
+	float increase = qual->gain(node, neigh_pos[i], neigh_weight[neigh_pos[i]], w_degree);
 	if (increase>best_increase) {
 	  best_comm = neigh_pos[i];
 	  best_nblinks = neigh_weight[neigh_pos[i]];

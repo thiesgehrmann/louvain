@@ -36,7 +36,7 @@
 using namespace std;
 
 
-Zahn::Zahn(Graph & gr, long double max_w): Quality(gr,"Zahn-Condorcet"), max(max_w) {  
+Zahn::Zahn(Graph & gr, float max_w): Quality(gr,"Zahn-Condorcet"), max(max_w) {  
   n2c.resize(size);
 
   in.resize(size);
@@ -56,16 +56,16 @@ Zahn::~Zahn() {
   w.clear();
 }
 
-long double
+float
 Zahn::quality() {
-  long double q  = 0.0L;
-  long double m2 = g.total_weight;
-  long double n  = (long double)g.sum_nodes_w;
+  float q  = 0.0;
+  float m2 = g.total_weight;
+  float n  = (float)g.sum_nodes_w;
 
   for (int i=0 ; i < size ; i++) {
-    long double wc = (long double)w[i];
-    if (wc > 0.0L)
-      q += 2.0L*in[i] - max*wc*wc;
+    float wc = (float)w[i];
+    if (wc > 0.0)
+      q += 2.0*in[i] - max*wc*wc;
   }
   
   q += n*n*max - m2;

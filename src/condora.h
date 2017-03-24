@@ -42,46 +42,46 @@ using namespace std;
 class CondorA: public Quality {
  public:
   
-  vector<long double> in; // used to compute the quality participation of each community
-  long double sum_se; // sum of the nb_selfloops of each vertex
+  vector<float> in; // used to compute the quality participation of each community
+  float sum_se; // sum of the nb_selfloops of each vertex
 
-  CondorA(Graph & gr, long double sum);
+  CondorA(Graph & gr, float sum);
   ~CondorA();
 
   // change the weight of each link ij in the graph, from Aij to 4Aij/(d(i)+d(j)) - Aii/2d(i) - Ajj/2d(j)
   // return the result of Sum [Aii/2d(i) + Ajj/2d(j) - 2Aij/(d(i)+d(j))]
-  static long double graph_weighting(Graph *g);
+  static float graph_weighting(Graph *g);
 
-  inline void remove(int node, int comm, long double dnodecomm);
+  inline void remove(int node, int comm, float dnodecomm);
   
-  inline void insert(int node, int comm, long double dnodecomm);
+  inline void insert(int node, int comm, float dnodecomm);
 
-  inline long double gain(int node, int comm, long double dnodecomm, long double w_degree);
+  inline float gain(int node, int comm, float dnodecomm, float w_degree);
 
-  long double quality();
+  float quality();
 };
 
 
 inline void
-CondorA::remove(int node, int comm, long double dnodecomm) {
+CondorA::remove(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm] -= 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm] -= 2.0*dnodecomm + g.nb_selfloops(node);
   
   n2c[node] = -1;
 }
 
 inline void
-CondorA::insert(int node, int comm, long double dnodecomm) {
+CondorA::insert(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
   
-  in[comm] += 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm] += 2.0*dnodecomm + g.nb_selfloops(node);
   
   n2c[node] = comm;
 }
 
-inline long double
-CondorA::gain(int node, int comm, long double dnc, long double degc) {
+inline float
+CondorA::gain(int node, int comm, float dnc, float degc) {
   assert(node>=0 && node<size);
 
   return dnc;

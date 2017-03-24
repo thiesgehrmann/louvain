@@ -42,7 +42,7 @@ using namespace std;
 class ShiMalik: public Quality {
  public:
 
-  vector<long double> in, tot; // used to compute the quality participation of each community
+  vector<float> in, tot; // used to compute the quality participation of each community
   int kappa; // number of communities
 
   int kmin;
@@ -50,36 +50,36 @@ class ShiMalik: public Quality {
   ShiMalik(Graph & gr, int kappa_min);
   ~ShiMalik();
 
-  inline void remove(int node, int comm, long double dnodecomm);
+  inline void remove(int node, int comm, float dnodecomm);
 
-  inline void insert(int node, int comm, long double dnodecomm);
+  inline void insert(int node, int comm, float dnodecomm);
 
-  inline long double gain(int node, int comm, long double dnodecomm, long double w_degree);
+  inline float gain(int node, int comm, float dnodecomm, float w_degree);
 
-  long double quality();
+  float quality();
 };
 
 
 inline void
-ShiMalik::remove(int node, int comm, long double dnodecomm) {
+ShiMalik::remove(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm]  -= 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm]  -= 2.0*dnodecomm + g.nb_selfloops(node);
   tot[comm] -= g.weighted_degree(node);
   
-  if (tot[comm] == 0.0L)
+  if (tot[comm] == 0.0)
     kappa--;
 
   n2c[node] = -1;
 }
 
 inline void
-ShiMalik::insert(int node, int comm, long double dnodecomm) {
+ShiMalik::insert(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm] += 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm] += 2.0*dnodecomm + g.nb_selfloops(node);
 
-  if (tot[comm] == 0.0L)
+  if (tot[comm] == 0.0)
     kappa++;
   
   tot[comm] += g.weighted_degree(node);
@@ -87,26 +87,26 @@ ShiMalik::insert(int node, int comm, long double dnodecomm) {
   n2c[node] = comm;
 }
 
-inline long double
-ShiMalik::gain(int node, int comm, long double dnc, long double degc) {
+inline float
+ShiMalik::gain(int node, int comm, float dnc, float degc) {
   assert(node>=0 && node<size);
 
-  long double inc  = in[comm];
-  long double totc = tot[comm];
-  long double self = g.nb_selfloops(node);
+  float inc  = in[comm];
+  float totc = tot[comm];
+  float self = g.nb_selfloops(node);
   
-  long double gain;
+  float gain;
   
-  if (totc == 0.0L) {
-    gain  = (2.0L*dnc+self) / degc;
-    gain -= 1.0L;
+  if (totc == 0.0) {
+    gain  = (2.0*dnc+self) / degc;
+    gain -= 1.0;
   }
   else {
-    gain  = (inc + 2.0L*dnc+self) / (totc+degc);
+    gain  = (inc + 2.0*dnc+self) / (totc+degc);
     gain -= inc/totc;
   }
 
-  if (kappa < kmin) return 0.0L;
+  if (kappa < kmin) return 0.0;
   else return gain;
 }
 

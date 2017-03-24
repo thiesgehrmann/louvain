@@ -36,7 +36,7 @@
 using namespace std;
 
 
-DP::DP(Graph & gr, long double sum, long double max_w):Quality(gr,"Profile Difference"),kappa(size),sum_sq(sum),max(max_w) {
+DP::DP(Graph & gr, float sum, float max_w):Quality(gr,"Profile Difference"),kappa(size),sum_sq(sum),max(max_w) {
   n2c.resize(size);
 
   in.resize(size);
@@ -55,25 +55,25 @@ DP::~DP() {
   w.clear();
 }
 
-long double
+float
 DP::graph_weighting(Graph *g) {
-  long double sum_sq = 0.0L;
+  float sum_sq = 0.0;
   
-  vector<long double> aux_weights;
+  vector<float> aux_weights;
   
   // foreach weight, change Aij to 2Aij / (d(i)+d(j))
   for (int u=0 ; u < g->nb_nodes ; u++) {
-    pair<vector<int>::iterator, vector<long double>::iterator> p = g->neighbors(u);
+    pair<vector<int>::iterator, vector<float>::iterator> p = g->neighbors(u);
     int deg = g->nb_neighbors(u);
     for (int i=0 ; i < deg ; i++) {
       int neigh = *(p.first+i);
-      long double neigh_w = 0.0L;
+      float neigh_w = 0.0;
       
       if (g->weights.size() == 0)
-	neigh_w = 2.0L / ((long double)deg + (long double)(g->nb_neighbors(neigh)));
+	neigh_w = 2.0 / ((float)deg + (float)(g->nb_neighbors(neigh)));
       else {
-	long double old_neigh = (long double)*(p.second+i);
-	neigh_w = 2.0L*old_neigh / ((long double)deg + (long double)(g->nb_neighbors(neigh)));
+	float old_neigh = (float)*(p.second+i);
+	neigh_w = 2.0*old_neigh / ((float)deg + (float)(g->nb_neighbors(neigh)));
       }
       
       aux_weights.push_back(neigh_w);
@@ -85,11 +85,11 @@ DP::graph_weighting(Graph *g) {
   g->weights.clear();
   g->weights = aux_weights;
   
-  g->total_weight = 0.0L;
+  g->total_weight = 0.0;
   
   // Compute total weight
   for (int i=0 ; i < g->nb_nodes ; i++)
-    g->total_weight += (long double)(g->weighted_degree(i));
+    g->total_weight += (float)(g->weighted_degree(i));
 
   aux_weights.clear();
 
@@ -97,18 +97,18 @@ DP::graph_weighting(Graph *g) {
 }
 
 
-long double
+float
 DP::quality() {
-  long double q = 0.0L;
-  long double n = (long double)g.sum_nodes_w;
+  float q = 0.0;
+  float n = (float)g.sum_nodes_w;
 
   for (int i=0 ; i < size ; i++) {
-    long double wc = (long double)w[i];
-    if (wc > 0.0L)
-      q += 2.0L*in[i] / wc;
+    float wc = (float)w[i];
+    if (wc > 0.0)
+      q += 2.0*in[i] / wc;
   }
   
-  q -= (sum_sq + (long double)kappa);
+  q -= (sum_sq + (float)kappa);
 
   q /= n*n*max;
   

@@ -55,17 +55,17 @@ ShiMalik::~ShiMalik() {
   tot.clear();
 }
 
-long double
+float
 ShiMalik::quality() {
-  long double q  = 0.0L;
-  long double n = (long double)g.sum_nodes_w;
+  float q  = 0.0;
+  float n = (float)g.sum_nodes_w;
 
   for (int i=0 ; i<size ; i++) {
-    if (tot[i] > 0.0L)
+    if (tot[i] > 0.0)
       q += in[i] / tot[i];
   }
   
-  q -= (long double)kappa;
+  q -= (float)kappa;
 
   q /= n;
   

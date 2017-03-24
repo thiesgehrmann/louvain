@@ -51,12 +51,12 @@ class Graph {
   int nb_nodes;
   unsigned long long nb_links;
 
-  long double total_weight;
+  float total_weight;
   int sum_nodes_w;
 
   vector<unsigned long long> degrees;
   vector<int> links;
-  vector<long double> weights;
+  vector<float> weights;
 
   vector<int> nodes_w;
 
@@ -72,7 +72,7 @@ class Graph {
   Graph(char *filename, char *filename_w, int type);
 
   // return the biggest weight of links in the graph
-  long double max_weight();
+  float max_weight();
   
   // assign a weight to a node (needed after the first level)
   void assign_weight(int node, int weight);
@@ -90,13 +90,13 @@ class Graph {
   inline int nb_neighbors(int node);
 
   // return the number of self loops of the node
-  inline long double nb_selfloops(int node);
+  inline float nb_selfloops(int node);
 
   // return the weighted degree of the node
-  inline long double weighted_degree(int node);
+  inline float weighted_degree(int node);
 
   // return pointers to the first neighbor and first weight of the node
-  inline pair<vector<int>::iterator, vector<long double>::iterator > neighbors(int node);
+  inline pair<vector<int>::iterator, vector<float>::iterator > neighbors(int node);
 };
 
 
@@ -110,39 +110,39 @@ Graph::nb_neighbors(int node) {
     return (int)(degrees[node]-degrees[node-1]);
 }
 
-inline long double
+inline float
 Graph::nb_selfloops(int node) {
   assert(node>=0 && node<nb_nodes);
 
-  pair<vector<int>::iterator, vector<long double>::iterator > p = neighbors(node);
+  pair<vector<int>::iterator, vector<float>::iterator > p = neighbors(node);
   for (int i=0 ; i<nb_neighbors(node) ; i++) {
     if (*(p.first+i)==node) {
       if (weights.size()!=0)
-	return (long double)*(p.second+i);
+	return (float)*(p.second+i);
       else 
-	return 1.0L;
+	return 1.0;
     }
   }
-  return 0.0L;
+  return 0.0;
 }
 
-inline long double
+inline float
 Graph::weighted_degree(int node) {
   assert(node>=0 && node<nb_nodes);
   
   if (weights.size()==0)
-    return (long double)nb_neighbors(node);
+    return (float)nb_neighbors(node);
   else {
-    pair<vector<int>::iterator, vector<long double>::iterator > p = neighbors(node);
-    long double res = 0.0L;
+    pair<vector<int>::iterator, vector<float>::iterator > p = neighbors(node);
+    float res = 0.0;
     for (int i=0 ; i<nb_neighbors(node) ; i++) {
-      res += (long double)*(p.second+i);
+      res += (float)*(p.second+i);
     }
     return res;
   }
 }
 
-inline pair<vector<int>::iterator, vector<long double>::iterator >
+inline pair<vector<int>::iterator, vector<float>::iterator >
 Graph::neighbors(int node) {
   assert(node>=0 && node<nb_nodes);
   

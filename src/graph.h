@@ -48,7 +48,7 @@ using namespace std;
 
 class Graph {
  public:
-  vector<vector<pair<int, long double> > > links;
+  vector<vector<pair<int, float> > > links;
   
   Graph (char *filename, int type);
   

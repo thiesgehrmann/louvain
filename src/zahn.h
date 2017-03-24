@@ -43,51 +43,51 @@ class Zahn: public Quality {
  public:
   
   // used to compute the quality participation of each community
-  vector<long double> in;
+  vector<float> in;
   vector<int> w;
-  long double max; // biggest weight on links
+  float max; // biggest weight on links
 
-  Zahn(Graph & gr, long double max_w);
+  Zahn(Graph & gr, float max_w);
   ~Zahn();
 
-  inline void remove(int node, int comm, long double dnodecomm);
+  inline void remove(int node, int comm, float dnodecomm);
 
-  inline void insert(int node, int comm, long double dnodecomm);
+  inline void insert(int node, int comm, float dnodecomm);
 
-  inline long double gain(int node, int comm, long double dnodecomm, long double w_degree);
+  inline float gain(int node, int comm, float dnodecomm, float w_degree);
 
-  long double quality();
+  float quality();
 };
 
 
 inline void
-Zahn::remove(int node, int comm, long double dnodecomm) {
+Zahn::remove(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
 
-  in[comm] -= 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm] -= 2.0*dnodecomm + g.nb_selfloops(node);
   w[comm]  -= g.nodes_w[node];
   
   n2c[node] = -1;
 }
 
 inline void
-Zahn::insert(int node, int comm, long double dnodecomm) {
+Zahn::insert(int node, int comm, float dnodecomm) {
   assert(node>=0 && node<size);
   
-  in[comm] += 2.0L*dnodecomm + g.nb_selfloops(node);
+  in[comm] += 2.0*dnodecomm + g.nb_selfloops(node);
   w[comm]  += g.nodes_w[node];
   
   n2c[node] = comm;
 }
 
-inline long double
-Zahn::gain(int node, int comm, long double dnc, long double degc) {
+inline float
+Zahn::gain(int node, int comm, float dnc, float degc) {
   assert(node>=0 && node<size);
   
-  long double wc = (long double)w[comm];
-  long double wu = (long double)g.nodes_w[node];
+  float wc = (float)w[comm];
+  float wu = (float)g.nodes_w[node];
   
-  long double gain = 2.0L*dnc - wu*wc*max;
+  float gain = 2.0*dnc - wu*wc*max;
 
   return gain;
 }
