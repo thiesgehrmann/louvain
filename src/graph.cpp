@@ -66,10 +66,17 @@ Graph::Graph(char *filename, int type) {
         links[dest].push_back(make_pair(src,weight));
 
       nb_links += 1ULL;
+      if(nb_links % 10000000 == 0){
+        cerr << "\rRead " << nb_links << " lines"
+     }
     }
   }
 
   finput.close();
+  cerr << endl
+  cerr << "Finished reading " << filename << endl
+  cerr << "Read " << nb_nodes << " nodes" << endl
+  cerr << "Read " << nd_links << " edges" << endl
 }
 
 void
